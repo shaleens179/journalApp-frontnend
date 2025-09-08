@@ -1,40 +1,37 @@
-import { useEffect, useState } from "react";
-import { Sun, Moon } from "lucide-react";
-import Button from "./Button";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
-export default function Navbar() {
-  const [dark, setDark] = useState(false);
+const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const { darkMode, toggleTheme } = useTheme();
+  const userName = localStorage.getItem("userName") || "Guest";
 
-  useEffect(() => {
-    if (dark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [dark]);
+  const handleLogout = () => {
+    localStorage.removeItem("userName");
+    navigate("/login");
+  };
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 bg-white dark:bg-dark shadow-md sticky top-0 z-50">
-      <h1 className="text-2xl font-bold text-primary dark:text-accent">
-        Journal App ✍️
-      </h1>
+    <div className={`flex justify-between items-center p-4 ${darkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"} shadow-md`}>
+      <h1 className="font-bold text-xl">Journal App</h1>
       <div className="flex items-center gap-4">
-        <Button variant="ghost">Home</Button>
-        <Button variant="ghost">My Journals</Button>
-        <Button variant="ghost">About</Button>
-
-        {/* Dark Mode Toggle */}
+        <span className="hidden md:block">{userName}</span>
         <button
-          onClick={() => setDark(!dark)}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700 transition"
+          onClick={toggleTheme}
+          className="px-2 py-1 border rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"
         >
-          {dark ? (
-            <Moon className="text-accent w-5 h-5 animate-spin-slow" />
-          ) : (
-            <Sun className="text-yellow-500 w-5 h-5 animate-pulse" />
-          )}
+          {darkMode ? "Light" : "Dark"}
+        </button>
+        <button
+          onClick={handleLogout}
+          className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+        >
+          Logout
         </button>
       </div>
-    </nav>
+    </div>
   );
-}
+};
+
+export default Navbar;

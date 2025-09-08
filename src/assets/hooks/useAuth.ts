@@ -1,25 +1,17 @@
-// src/assets/hooks/useAuth.ts
 import { useState, useEffect } from "react";
 
-export function useAuth() {
-  const [userName, setUserName] = useState<string | null>(null);
+export const useAuth = () => {
+  const [user, setUser] = useState<string | null>(() => localStorage.getItem("user") || null);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("userName");
-    if (storedUser) setUserName(storedUser);
-  }, []);
-
-  const login = (user: string) => {
-    localStorage.setItem("userName", user);
-    setUserName(user);
+  const login = (userName: string) => {
+    localStorage.setItem("user", userName);
+    setUser(userName);
   };
 
   const logout = () => {
-    localStorage.removeItem("userName");
-    setUserName(null);
+    localStorage.removeItem("user");
+    setUser(null);
   };
 
-  const isLoggedIn = !!userName;
-
-  return { userName, isLoggedIn, login, logout };
-}
+  return { user, login, logout };
+};
